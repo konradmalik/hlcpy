@@ -1,7 +1,6 @@
 from setuptools import setup, find_packages
 
-requirements = [
-]
+requirements = ['numpy']
 
 setup(
     name='hlcpy',
