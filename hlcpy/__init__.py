@@ -1,7 +1,7 @@
 from __future__ import annotations
 import threading
 import time
-from hlcpy.util import synchronized
+from hlcpy.util import synchronized, nanos_to_iso8601, iso8601_to_nanos
 
 
 class HLC:
@@ -12,6 +12,13 @@ class HLC:
     @staticmethod
     def from_now():
         return HLC(nanos=time.time_ns())
+
+    @classmethod
+    def from_str(cls, s: str) -> HLC:
+        spl = s.split('_')
+        nanos = iso8601_to_nanos(spl[0])
+        logical = int(spl[1]) if len(spl) > 1 else 0
+        return cls(nanos, logical)
 
     @property
     def nanos(self) -> int:
@@ -34,7 +41,7 @@ class HLC:
         return self.nanos, self.logical
 
     def __str__(self) -> str:
-        return '{} {}'.format(self.nanos, self.logical)
+        return '{}_{}'.format(nanos_to_iso8601(self.nanos), self.logical)
 
     def __repr__(self) -> str:
         return 'HLC(nanos={},logical={})'.format(self.nanos, self.logical)

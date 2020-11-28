@@ -2,6 +2,19 @@ import time
 from hlcpy import HLC
 
 
+def test_str():
+    h1 = HLC()
+    h1.set_nanos(time.time_ns() + 10e9)
+    h2 = HLC.from_str(str(h1))
+    assert h2 == h1
+
+    h1 = HLC()
+    h1._set(123, 4)
+    h2 = HLC.from_str(str(h1))
+    assert str(h1).split("_")[1] == '4'
+    assert h2 == h1
+
+
 def test_compare():
     h1 = HLC()
     h2 = HLC()

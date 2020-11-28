@@ -10,7 +10,5 @@ Inspired by:
 
 
 ## TODO
-- swap logical part with uuid1
-- nanoseconds precision
 - make string representation as iso8601 with uuid part
 - does doing this introduce any potential errors related to precision?

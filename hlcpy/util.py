@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-import numpy
+from iso8601 import parse_date
 
 
 def synchronized(fn):
@@ -17,12 +17,20 @@ def now_utc() -> datetime:
 
 def nanos_to_iso8601(nanos: int) -> str:
     nanos_order = int(1e9)
-    dt = datetime.fromtimestamp(nanos // nanos_order)
+    dt = datetime.fromtimestamp(nanos // nanos_order, tz=timezone.utc)
     return '{}.{:09.0f}Z'.format(
         dt.strftime('%Y-%m-%dT%H:%M:%S'),
         nanos % nanos_order)
 
 
 def iso8601_to_nanos(s: str) -> int:
-    dt = numpy.datetime64(s)
-    return dt.astype('datetime64[ns]').astype('int')
+    last_dot = s.rindex('.')
+    zone_sep = s.index('Z') if 'Z' in s else s.index('+')
+    decimals_str = s[last_dot:zone_sep]
+    s_clean = s.replace(decimals_str, '')
+    dt = parse_date(s_clean)
+    # rounding discards nothing, just to int
+    seconds = round(dt.timestamp())
+    decimals_str = decimals_str.replace('.', '').ljust(9, '0')
+    full_str = str(seconds) + decimals_str
+    return int(full_str)

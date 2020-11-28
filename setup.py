@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-requirements = ['numpy']
+requirements = ['iso8601']
 
 setup(
     name='hlcpy',
