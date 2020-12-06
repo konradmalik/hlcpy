@@ -1,5 +1,28 @@
 import time
+import pytest
 from hlcpy import HLC
+
+
+def test_too_large():
+    with pytest.raises(ValueError):
+        HLC(2**43 * 1e6, 0)
+    HLC((2**43 - 1) * 1e6, 0)
+
+    with pytest.raises(ValueError):
+        HLC(2**43 * 1e6 - 1, 2**16)
+    HLC(2, 2**16 - 1)
+
+
+def test_bin():
+    h1 = HLC(3e6, 2)
+    h2 = HLC.from_bytes(h1.to_bytes())
+    assert h2 == h1
+
+    # nanos are not supported in binary representation
+    # so reconstructed element should be later than the former
+    h1 = HLC(3e5, 4)
+    h2 = HLC.from_bytes(h1.to_bytes())
+    assert h2 > h1
 
 
 def test_str():

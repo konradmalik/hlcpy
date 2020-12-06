@@ -1,17 +1,28 @@
 from __future__ import annotations
 import threading
 import time
+import math
 from hlcpy.util import synchronized, nanos_to_iso8601, iso8601_to_nanos
 
 
 class HLC:
+    n_bits = 64
+    n_bytes = int(n_bits / 8)
+    millis_bits = 43
+    logical_bits = 16
+    compatibility_bits = 64 - millis_bits - logical_bits
+    logical_mask = (1 << logical_bits) - 1
+    millis_mask = ((1 << (millis_bits + logical_bits)) - 1) ^ logical_mask
+    compatibility_mask = (1 << n_bits) - 1 ^ millis_mask ^ logical_mask
+    byteorder = 'little'
+
     def __init__(self, nanos: int = 0, logical: int = 0):
         self.lock = threading.Lock()
         self._set(nanos, logical)
 
-    @staticmethod
-    def from_now():
-        return HLC(nanos=time.time_ns())
+    @classmethod
+    def from_now(cls):
+        return cls(nanos=time.time_ns())
 
     @classmethod
     def from_str(cls, s: str) -> HLC:
@@ -20,9 +31,33 @@ class HLC:
         logical = int(spl[1]) if len(spl) > 1 else 0
         return cls(nanos, logical)
 
+    @classmethod
+    def from_bytes(cls, bs: bytes) -> HLC:
+        """Bytes repesentation must have 64 bits (8 bytes) in little endian.
+        Thier meaning 'from left' (smallest indices):
+        5 bits empty (for compatibility), 43 bits for timestamp in millis, 16 bits for the logical.
+        This keeps only millis precision as per standard.
+        """
+        assert len(bs) == cls.n_bytes
+        number = int.from_bytes(bs, byteorder=cls.byteorder)
+        millis_part = number & cls.millis_mask
+        millis = millis_part >> cls.logical_bits
+        logical = number & cls.logical_mask
+        return cls(int(millis * 1e6), logical)
+
+    def to_bytes(self) -> bytes:
+        compatibility_part = self.compatibility_mask
+        millis_part = self.millis << self.logical_bits
+        number = compatibility_part | millis_part | self.logical
+        return number.to_bytes(self.n_bytes, byteorder=self.byteorder)
+
     @property
     def nanos(self) -> int:
         return self._nanos
+
+    @property
+    def millis(self) -> int:
+        return math.ceil(self._nanos / 1e6)
 
     @property
     def logical(self) -> int:
@@ -33,6 +68,11 @@ class HLC:
         self._set(nanos, 0)
 
     def _set(self, nanos: int, logical: int):
+        if nanos / 1e6 >= 2**self.millis_bits:
+            raise ValueError(
+                'Time in milliseconds cannot be larger than 43 bits')
+        if logical >= 2**self.logical_bits:
+            raise ValueError('Logical time cannot be larger than 16 bits')
         self._nanos = nanos
         self._logical = logical
 
