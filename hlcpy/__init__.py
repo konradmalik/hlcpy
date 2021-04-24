@@ -14,7 +14,7 @@ class HLC:
     logical_mask = (1 << logical_bits) - 1
     millis_mask = ((1 << (millis_bits + logical_bits)) - 1) ^ logical_mask
     compatibility_mask = (1 << n_bits) - 1 ^ millis_mask ^ logical_mask
-    byteorder = 'little'
+    byteorder = "little"
 
     def __init__(self, nanos: int = 0, logical: int = 0):
         self.lock = threading.Lock()
@@ -26,7 +26,7 @@ class HLC:
 
     @classmethod
     def from_str(cls, s: str) -> HLC:
-        spl = s.split('_')
+        spl = s.split("_")
         nanos = iso8601_to_nanos(spl[0])
         logical = int(spl[1]) if len(spl) > 1 else 0
         return cls(nanos, logical)
@@ -68,11 +68,10 @@ class HLC:
         self._set(nanos, 0)
 
     def _set(self, nanos: int, logical: int):
-        if nanos / 1e6 >= 2**self.millis_bits:
-            raise ValueError(
-                'Time in milliseconds cannot be larger than 43 bits')
-        if logical >= 2**self.logical_bits:
-            raise ValueError('Logical time cannot be larger than 16 bits')
+        if nanos / 1e6 >= 2 ** self.millis_bits:
+            raise ValueError("Time in milliseconds cannot be larger than 43 bits")
+        if logical >= 2 ** self.logical_bits:
+            raise ValueError("Logical time cannot be larger than 16 bits")
         self._nanos = nanos
         self._logical = logical
 
@@ -81,10 +80,10 @@ class HLC:
         return self.nanos, self.logical
 
     def __str__(self) -> str:
-        return '{}_{}'.format(nanos_to_iso8601(self.nanos), self.logical)
+        return "{}_{}".format(nanos_to_iso8601(self.nanos), self.logical)
 
     def __repr__(self) -> str:
-        return 'HLC(nanos={},logical={})'.format(self.nanos, self.logical)
+        return "HLC(nanos={},logical={})".format(self.nanos, self.logical)
 
     def __eq__(self, other) -> bool:
         return self.tuple() == other.tuple()

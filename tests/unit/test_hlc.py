@@ -5,12 +5,12 @@ from hlcpy import HLC
 
 def test_too_large():
     with pytest.raises(ValueError):
-        HLC(2**43 * 1e6, 0)
-    HLC((2**43 - 1) * 1e6, 0)
+        HLC(2 ** 43 * 1e6, 0)
+    HLC((2 ** 43 - 1) * 1e6, 0)
 
     with pytest.raises(ValueError):
-        HLC(2**43 * 1e6 - 1, 2**16)
-    HLC(2, 2**16 - 1)
+        HLC(2 ** 43 * 1e6 - 1, 2 ** 16)
+    HLC(2, 2 ** 16 - 1)
 
 
 def test_bin():
@@ -34,7 +34,7 @@ def test_str():
     h1 = HLC()
     h1._set(123, 4)
     h2 = HLC.from_str(str(h1))
-    assert str(h1).split("_")[1] == '4'
+    assert str(h1).split("_")[1] == "4"
     assert h2 == h1
 
 
