@@ -26,7 +26,7 @@ lint: venv
 test: venv
 	${PYTHON} -m pytest tests -sv
 
-dist:
+dist: lint test
 	rm -rf *.egg-info
 	${PYTHON} setup.py sdist bdist_wheel
 
