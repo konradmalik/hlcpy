@@ -1,3 +1,6 @@
+![tests](https://github.com/konradmalik/hlcpy/actions/workflows/test.yaml/badge.svg) ![publishing](https://github.com/konradmalik/hlcpy/actions/workflows/publish.yaml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/hlcpy.svg)](https://badge.fury.io/py/hlcpy)
+
 # Hybrid Logical Clock
 
 Python implementation of Hybrid Logical Clock.

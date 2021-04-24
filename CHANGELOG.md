@@ -11,9 +11,13 @@ Unreleased changes will be listed here.
 
 ### Added
 
+- badges to repo
+
 ### Changed
 
 ### Fixed
+
+- readme typos
 
 ## [0.0.2] - 2021-04-24
 
