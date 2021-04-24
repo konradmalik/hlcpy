@@ -107,7 +107,7 @@ class HLC:
         self._set(nanos, logical)
 
     @synchronized
-    def merge(self, event: HLC, sync: bool = True):
+    def merge(self, event: HLC):
         "To be used on receiving an event"
         cnanos, clogical = self.tuple()
         enanos, elogical = event.tuple()

@@ -14,20 +14,20 @@ def test_too_large():
 
 
 def test_bin():
-    h1 = HLC(3e6, 2)
+    h1 = HLC(int(3e6), 2)
     h2 = HLC.from_bytes(h1.to_bytes())
     assert h2 == h1
 
     # nanos are not supported in binary representation
     # so reconstructed element should be later than the former
-    h1 = HLC(3e5, 4)
+    h1 = HLC(int(3e5), 4)
     h2 = HLC.from_bytes(h1.to_bytes())
     assert h2 > h1
 
 
 def test_str():
     h1 = HLC()
-    h1.set_nanos(time.time_ns() + 10e9)
+    h1.set_nanos(int(time.time_ns() + 10e9))
     h2 = HLC.from_str(str(h1))
     assert h2 == h1
 
@@ -37,17 +37,20 @@ def test_str():
     assert str(h1).split("_")[1] == "4"
     assert h2 == h1
 
+    h1 = HLC.from_str("2020-01-01T00:00:00Z")
+    assert h1.nanos == 1577836800000000000
+
 
 def test_compare():
     h1 = HLC()
     h2 = HLC()
-    h1.set_nanos(time.time_ns() + 10e9)
+    h1.set_nanos(int(time.time_ns() + 10e9))
     assert h2 == h2
     assert h2 < h1
 
 
 def test_sync():
-    future_nanos = time.time_ns() + 10e9
+    future_nanos = int(time.time_ns() + 10e9)
     h1 = HLC()
     h1.set_nanos(future_nanos)
     h1.sync()
@@ -65,7 +68,7 @@ def test_merge():
     original_nanos, _ = h1.tuple()
     event = HLC()
     # event is 10 seconds in the future
-    event.set_nanos(wall_nanos + 3e9)
+    event.set_nanos(int(wall_nanos + 3e9))
 
     h1.merge(event)
     nanos, logical = h1.tuple()

@@ -23,10 +23,19 @@ def nanos_to_iso8601(nanos: int) -> str:
 
 
 def iso8601_to_nanos(s: str) -> int:
-    last_dot = s.rindex(".")
-    zone_sep = s.index("Z") if "Z" in s else s.index("+")
-    decimals_str = s[last_dot:zone_sep]
-    s_clean = s.replace(decimals_str, "")
+    """
+    Converts iso8601 string to nanoseconds
+    Supports nanosecods and does not trim/round them
+    """
+    # this if-else branch handles potential nanoseconds
+    if "." in s:
+        last_dot = s.rindex(".")
+        zone_sep = s.index("Z") if "Z" in s else s.index("+")
+        decimals_str = s[last_dot:zone_sep]
+        s_clean = s.replace(decimals_str, "")
+    else:
+        s_clean = s
+        decimals_str = ""
     dt = parse_date(s_clean)
     # rounding discards nothing, just to int
     seconds = round(dt.timestamp())
