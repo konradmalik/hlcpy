@@ -4,6 +4,8 @@ import time
 import math
 from hlcpy.util import synchronized, nanos_to_iso8601, iso8601_to_nanos
 
+__version__ = "0.0.1"
+
 
 class HLC:
     n_bits = 64
