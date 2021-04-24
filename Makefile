@@ -31,7 +31,7 @@ dist:
 	${PYTHON} setup.py sdist bdist_wheel
 
 twine-check:
-	twine check ${DIST}
+	${PYTHON} -m twine check ${DIST}
 
 twine-upload:
-	twine upload ${DIST}
+	${PYTHON} -m twine upload ${DIST}
