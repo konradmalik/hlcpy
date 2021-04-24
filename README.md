@@ -47,7 +47,7 @@ c.merge(c1)
 print(c)
 #>>> 2021-04-24T18:42:47.001864924Z_0
 
-# merge event that occured in the future see the logical tick
+# merge event that occured in the future to see the logical tick
 import time
 future = hlcpy.HLC(nanos=int(time.time_ns() + 3e9))
 c.merge(future)
