@@ -2,6 +2,8 @@
 
 Python implementation of Hybrid Logical Clock.
 
+Requires Python version >= 3.7.
+
 You can install this package from [PyPI](https://pypi.org/project/hlcpy/):
 
 ```bash

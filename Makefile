@@ -3,7 +3,6 @@ VENV_NAME?=venv
 MODULE=hlcpy
 PYTHON=${VENV_NAME}/bin/python3
 DIST=dist/*
-PYPI=https://test.pypi.org/legacy/
 
 .PHONY: dist
 
@@ -35,4 +34,4 @@ twine-check:
 	twine check ${DIST}
 
 twine-upload:
-	twine upload --repository-url ${PYPI} ${DIST}
+	twine upload ${DIST}
